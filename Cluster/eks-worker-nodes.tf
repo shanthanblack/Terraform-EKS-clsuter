@@ -33,12 +33,14 @@ resource "aws_iam_role_policy_attachment" "demo-node-AmazonEC2ContainerRegistryR
 }
 
 resource "aws_iam_instance_profile" "demo-node" {
-  name = "terraform-eks-demo"
+  name = "terraform-eks-demo-node"
   role = aws_iam_role.demo-node.name
 }
 
+
+
 resource "aws_security_group" "demo-node" {
-  name        = "terraform-eks-demo-node-sg"
+  name        = "terraform-eks-demo-node"
   description = "Security group for all nodes in the cluster"
   vpc_id      = aws_vpc.demo.id
 
@@ -68,7 +70,7 @@ resource "aws_security_group_rule" "demo-node-ingress-cluster" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1025
   protocol                 = "tcp"
-  security_group_id        = "aws_security_group.demo-node.id"
+  security_group_id        = aws_security_group.demo-node.id
   source_security_group_id = aws_security_group.demo-cluster.id
   to_port                  = 65535
   type                     = "ingress"
